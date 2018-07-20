@@ -6,6 +6,7 @@
     "immutable": "^3.8.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-icons-kit": "^1.1.6",
     "react-scripts": "1.1.4",
     "slate": "^0.34.5",
     "slate-react": "^0.13.2"
