@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Editor } from 'slate-react';
-import { Value } from 'slate';
+
+import InitialValue from '../utils/InitialValue';
 
 import Icon from 'react-icons-kit';
 import { bold } from 'react-icons-kit/feather/bold';
@@ -8,34 +9,15 @@ import { italic } from 'react-icons-kit/feather/italic';
 import { code } from 'react-icons-kit/feather/code';
 import { list } from 'react-icons-kit/feather/list';
 import { underline } from 'react-icons-kit/feather/underline';
+import { link2 } from 'react-icons-kit/feather/link2';
 
+import { ic_title } from 'react-icons-kit/md/ic_title';
+import { ic_format_quote } from 'react-icons-kit/md/ic_format_quote';
 import { BoldMark, ItalicMark, FormatToolbar } from './index';
-
-// Create our initial value...
-const initialValue = Value.fromJSON({
-	document: {
-		nodes: [
-			{
-				object: 'block',
-				type: 'paragraph',
-				nodes: [
-					{
-						object: 'text',
-						leaves: [
-							{
-								text: 'My first paragraph!',
-							},
-						],
-					},
-				],
-			},
-		],
-	},
-});
 
 export default class TextEditor extends Component {
 	state = {
-		value: initialValue,
+		value: InitialValue,
 	};
 
 	// On change, update the app's React state with the new editor value.
@@ -81,8 +63,33 @@ export default class TextEditor extends Component {
 				change.toggleMark('underline');
 				return true;
 			}
+
+			case 'q': {
+				change.toggleMark('quote');
+				return true;
+			}
+
+			case 'h': {
+				change.toggleMark('title');
+				return true;
+			}
+
 			default: {
 				return;
+			}
+		}
+	};
+
+	renderNode = (props) => {
+		console.log(props.node);
+		switch (props.node.type) {
+			case 'link': {
+				console.log(props.node.data.get('href'));
+				return (
+					<a href={props.node.data.get('href')} {...props.attributes}>
+						{props.children}
+					</a>
+				);
 			}
 		}
 	};
@@ -108,11 +115,66 @@ export default class TextEditor extends Component {
 			case 'underline':
 				return <u {...props.attributes}>{props.children}</u>;
 
+			case 'quote':
+				return <blockquote {...props.attributes}>{props.children}</blockquote>;
+
+			case 'title':
+				return <h1 {...props.attributes}>{props.children}</h1>;
+
 			default: {
 				return;
 			}
 		}
 	};
+
+	hasLinks = () => {
+		const { value } = this.state;
+		return value.inlines.some((inline) => inline.type === 'link');
+	};
+
+	wrapLink = (change, href) => {
+		change.wrapInline({
+			type: 'link',
+			data: { href },
+		});
+
+		change.collapseToEnd();
+	};
+
+	onLinkClick = (e) => {
+		/* disabling browser default behavior like page refresh, etc */
+		e.preventDefault();
+
+		const { value } = this.state;
+		const hasLinks = this.hasLinks();
+		const change = value.change();
+
+		if (hasLinks) {
+			change.call(change.unwrapInline('link'));
+		} else if (value.isExpanded) {
+			const href = window.prompt('Enter the URL of the link:');
+			change.call(this.wrapLink, href);
+		} else {
+			const href = window.prompt('Enter the URL of the link:');
+			const text = window.prompt('Enter the text for the link:');
+
+			change
+				.insertText(text)
+				.extend(0 - text.length)
+				.call(this.wrapLink, href);
+		}
+
+		this.onChange(change);
+	};
+
+	renderLinkIcon = (type, icon) => (
+		<button
+			onPointerDown={(e) => this.onLinkClick(e, type)}
+			className="tooltip-icon-button"
+		>
+			<Icon icon={icon} />
+		</button>
+	);
 
 	onMarkClick = (e, type) => {
 		/* disabling browser default behavior like page refresh, etc */
@@ -131,46 +193,34 @@ export default class TextEditor extends Component {
 		this.onChange(change);
 	};
 
+	renderMarkIcon = (type, icon) => (
+		<button
+			onPointerDown={(e) => this.onMarkClick(e, type)}
+			className="tooltip-icon-button"
+		>
+			<Icon icon={icon} />
+		</button>
+	);
+
 	render() {
 		return (
 			<Fragment>
 				<FormatToolbar>
-					<button
-						onPointerDown={(e) => this.onMarkClick(e, 'bold')}
-						className="tooltip-icon-button"
-					>
-						<Icon icon={bold} />
-					</button>
-					<button
-						onPointerDown={(e) => this.onMarkClick(e, 'italic')}
-						className="tooltip-icon-button"
-					>
-						<Icon icon={italic} />
-					</button>
-					<button
-						onPointerDown={(e) => this.onMarkClick(e, 'code')}
-						className="tooltip-icon-button"
-					>
-						<Icon icon={code} />
-					</button>
-					<button
-						onPointerDown={(e) => this.onMarkClick(e, 'list')}
-						className="tooltip-icon-button"
-					>
-						<Icon icon={list} />
-					</button>
-					<button
-						onPointerDown={(e) => this.onMarkClick(e, 'underline')}
-						className="tooltip-icon-button"
-					>
-						<Icon icon={underline} />
-					</button>
+					{this.renderMarkIcon('title', ic_title)}
+					{this.renderMarkIcon('bold', bold)}
+					{this.renderMarkIcon('italic', italic)}
+					{this.renderMarkIcon('code', code)}
+					{this.renderMarkIcon('list', list)}
+					{this.renderMarkIcon('underline', underline)}
+					{this.renderMarkIcon('quote', ic_format_quote)}
+					{this.renderLinkIcon('link', link2)}
 				</FormatToolbar>
 				<Editor
 					value={this.state.value}
 					onChange={this.onChange}
 					onKeyDown={this.onKeyDown}
 					renderMark={this.renderMark}
+					renderNode={this.renderNode}
 				/>
 			</Fragment>
 		);

@@ -11,6 +11,50 @@ body {
 	background-color: rgb(240, 240, 240);
 }
 
+h1 {
+	margin: 20px 0 25px 0;
+}
+
+blockquote {
+	font-size: 1.4em;
+	width: 80%;
+	margin: 50px auto;
+	font-family: Open Sans;
+	font-style: italic;
+	color: #555555;
+	padding: 1.2em 30px 1.2em 75px;
+	border-left: 8px solid #9d7ff2;
+	line-height: 1.6;
+	position: relative;
+	background: #ededed;
+}
+
+a {
+	color: #9d7ff2;
+}
+
+blockquote::before {
+	font-family: Arial;
+	content: '\201C';
+	color: #9d7ff2;
+	font-size: 4em;
+	position: absolute;
+	left: 10px;
+	top: -10px;
+}
+
+blockquote::after {
+	content: '';
+}
+
+blockquote span {
+	display: block;
+	color: #333333;
+	font-style: normal;
+	font-weight: bold;
+	margin-top: 1em;
+}
+
 .App {
 	color: rgb(17, 17, 17);
 	max-width: 740px;
@@ -25,7 +69,7 @@ body {
 	display: flex;
 	border-bottom: solid 1.7px rgba(199, 198, 255, 0.15);
 	padding: 10px 0;
-	margin: 0 0 10px 0;
+	margin: 0 0 20px 0;
 }
 
 .tooltip-icon-button {
