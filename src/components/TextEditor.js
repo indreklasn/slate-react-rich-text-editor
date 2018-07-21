@@ -91,6 +91,10 @@ export default class TextEditor extends Component {
 					</a>
 				);
 			}
+
+			default: {
+				return;
+			}
 		}
 	};
 
@@ -141,6 +145,8 @@ export default class TextEditor extends Component {
 		change.collapseToEnd();
 	};
 
+	unwrapLink = (change) => change.unwrapInline('link');
+
 	onLinkClick = (e) => {
 		/* disabling browser default behavior like page refresh, etc */
 		e.preventDefault();
@@ -150,7 +156,7 @@ export default class TextEditor extends Component {
 		const change = value.change();
 
 		if (hasLinks) {
-			change.call(change.unwrapInline('link'));
+			change.call(this.unwrapLink);
 		} else if (value.isExpanded) {
 			const href = window.prompt('Enter the URL of the link:');
 			change.call(this.wrapLink, href);
