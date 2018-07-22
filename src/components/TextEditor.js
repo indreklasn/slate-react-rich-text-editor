@@ -159,15 +159,17 @@ export default class TextEditor extends Component {
 			change.call(this.unwrapLink);
 		} else if (value.isExpanded) {
 			const href = window.prompt('Enter the URL of the link:');
-			change.call(this.wrapLink, href);
+			href.length > 0 ? change.call(this.wrapLink, href) : null;
 		} else {
 			const href = window.prompt('Enter the URL of the link:');
 			const text = window.prompt('Enter the text for the link:');
 
-			change
-				.insertText(text)
-				.extend(0 - text.length)
-				.call(this.wrapLink, href);
+			href.length > 0
+				? change
+						.insertText(text)
+						.extend(0 - text.length)
+						.call(this.wrapLink, href)
+				: null;
 		}
 
 		this.onChange(change);
