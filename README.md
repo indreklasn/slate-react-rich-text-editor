@@ -1,7 +1,6 @@
 slate-react-rich-text-editor is being sponsored by the following tool; please help to support us by taking a look and signing up to a free trial.
 
-<a href="https://tracking.gitads.io/?repo=slate-react-rich-text-editor"><img src="https://images.gitads.io/slate-react-rich-text-editor" alt="GitAds"/></a>
-
+<a href="https://tracking.gitads.io/?repo=slate-react-rich-text-editor"><img src="https://images.gitads.io/slate-react-rich-text-editor" alt="GitAds"/></a
 
 ### Demo
 
