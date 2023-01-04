@@ -7,7 +7,7 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-icons-kit": "^1.1.6",
-    "react-scripts": "1.1.4",
+    "react-scripts": "5.0.1",
     "slate": "^0.34.5",
     "slate-react": "^0.13.2"
   },
